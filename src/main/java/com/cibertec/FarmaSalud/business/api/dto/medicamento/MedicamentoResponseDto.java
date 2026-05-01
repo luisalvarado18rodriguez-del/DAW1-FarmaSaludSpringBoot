@@ -11,5 +11,7 @@ public class MedicamentoResponseDto {
     private Integer stock;
     private LocalDate fechaVencimiento;
     private Boolean recetaMedica;
-    private String nombreCategoria; // Mostramos el nombre de la categoría, no todo el objeto
+    private String nombreCategoria;
+    private String lote;
+    private String rutaImagen;
 }

@@ -20,4 +20,7 @@ public class MedicamentoRequestDto {
 
     @NotNull(message = "La categoría es obligatoria")
     private Integer idCategoria; // Solo pedimos el ID al crear
+    @NotNull(message = "Debe ingresar el Lote")
+    private String lote;
+    private String rutaImagen;
 }
