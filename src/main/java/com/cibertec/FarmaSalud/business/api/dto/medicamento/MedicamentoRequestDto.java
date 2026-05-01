@@ -3,6 +3,7 @@ package com.cibertec.FarmaSalud.business.api.dto.medicamento;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Data
 public class MedicamentoRequestDto {
@@ -15,6 +16,7 @@ public class MedicamentoRequestDto {
     @Min(value = 0, message = "El stock no puede ser negativo")
     private Integer stock;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate fechaVencimiento;
     private Boolean recetaMedica;
 

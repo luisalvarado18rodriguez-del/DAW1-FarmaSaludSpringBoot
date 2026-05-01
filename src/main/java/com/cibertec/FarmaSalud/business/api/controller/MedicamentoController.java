@@ -3,10 +3,16 @@ package com.cibertec.FarmaSalud.business.api.controller;
 import com.cibertec.FarmaSalud.business.api.dto.medicamento.MedicamentoRequestDto;
 import com.cibertec.FarmaSalud.business.api.dto.medicamento.MedicamentoResponseDto;
 import com.cibertec.FarmaSalud.business.domain.service.MedicamentoService;
+import com.cibertec.FarmaSalud.business.domain.service.UploadFileService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -17,13 +23,25 @@ public class MedicamentoController {
     @Autowired
     private MedicamentoService service;
 
+    @Autowired
+    private UploadFileService uploadService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @GetMapping
     public List<MedicamentoResponseDto> listar() {
         return service.listarTodos();
     }
 
-    @PostMapping
-    public MedicamentoResponseDto registrar(@Valid @RequestBody MedicamentoRequestDto dto) {
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public MedicamentoResponseDto registrar(
+            @RequestPart("medicamento") String medicamentoJson, // El DTO como String
+            @RequestPart("archivo") MultipartFile archivo) throws IOException {
+
+        MedicamentoRequestDto dto = objectMapper.readValue(medicamentoJson, MedicamentoRequestDto.class);
+        String nombreImagen = uploadService.saveFile(archivo);
+        dto.setRutaImagen(nombreImagen);
         return service.guardar(dto);
     }
 
