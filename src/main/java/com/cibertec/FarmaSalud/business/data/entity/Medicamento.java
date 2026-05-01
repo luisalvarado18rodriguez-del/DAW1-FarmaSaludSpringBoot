@@ -36,4 +36,9 @@ public class Medicamento {
     @ManyToOne
     @JoinColumn(name = "id_categoria")
     private Categoria categoria;
+    @Column(nullable = false, length = 20)
+    private String lote;
+    //CAMPO: Para la imagen del producto
+    @Column(name = "ruta_imagen", length = 255)
+    private String rutaImagen;
 }
