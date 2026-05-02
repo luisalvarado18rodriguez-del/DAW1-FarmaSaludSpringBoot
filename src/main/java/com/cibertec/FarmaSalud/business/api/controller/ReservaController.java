@@ -5,6 +5,7 @@ import com.cibertec.FarmaSalud.business.api.dto.reserva.ReservaResponseDto;
 import com.cibertec.FarmaSalud.business.domain.service.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,9 +17,13 @@ public class ReservaController {
     @Autowired
     private ReservaService service;
 
-    @PostMapping
-    public ReservaResponseDto crear(@RequestBody ReservaRequestDto dto) {
-        return service.crearReserva(dto);
+    // Cambio conceptual en el @PostMapping
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ReservaResponseDto crear(
+            @RequestPart("reserva") ReservaRequestDto dto,
+            @RequestPart("archivos") List<MultipartFile> archivos) {
+        // Aquí llamaremos al servicio pasando el DTO y los archivos reales
+        return service.crearReserva(dto, archivos);
     }
 
     @GetMapping
