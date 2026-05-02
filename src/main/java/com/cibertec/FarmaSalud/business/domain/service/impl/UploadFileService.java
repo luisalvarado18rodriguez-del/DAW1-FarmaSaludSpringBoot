@@ -1,4 +1,4 @@
-package com.cibertec.FarmaSalud.business.domain.service;
+package com.cibertec.FarmaSalud.business.domain.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

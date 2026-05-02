@@ -4,9 +4,13 @@ import com.cibertec.FarmaSalud.business.api.dto.usuario.UsuarioRequestDto;
 import com.cibertec.FarmaSalud.business.api.dto.usuario.UsuarioResponseDto;
 import com.cibertec.FarmaSalud.business.data.entity.Usuario;
 import com.cibertec.FarmaSalud.business.data.repository.UsuarioRepository;
+import com.cibertec.FarmaSalud.business.domain.enums.RolNombre;
 import com.cibertec.FarmaSalud.business.domain.mapper.UsuarioMapper;
 import com.cibertec.FarmaSalud.business.domain.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +24,26 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private UsuarioMapper mapper;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+
+    @Override
+    public UsuarioResponseDto login(String username, String password) {
+        // 1. Autenticar
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
+
+        // 2. Buscar y transformar a DTO
+        Usuario usuario = repo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return mapper.toResponseDto(usuario);
+    }
+
 
     @Override
     public List<UsuarioResponseDto> listarTodos() {
@@ -28,16 +52,24 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .collect(Collectors.toList());
     }
 
+
+
     @Override
     public UsuarioResponseDto guardar(UsuarioRequestDto requestDto) {
-        // Convertimos el DTO a Entidad
+        // 1. Convertimos el DTO a Entidad
         Usuario entidad = mapper.toEntity(requestDto);
 
-        // NOTA: Por ahora guardamos el password en texto plano.
-        // Más adelante aplicaremos BCrypt aquí mismo[cite: 117].
+
+        entidad.setRol(RolNombre.CLIENTE);
+
+        //  ENCRIPTACIÓN: Hasheamos la contraseña para que el login funcione
+        String passwordHashed = passwordEncoder.encode(entidad.getPassword());
+        entidad.setPassword(passwordHashed);
+
+        // Guardamos en MySQL
         Usuario guardado = repo.save(entidad);
 
-        // Devolvemos la respuesta (que ya no incluye el password)
+        //  Devolvemos la respuesta (sin el password)
         return mapper.toResponseDto(guardado);
     }
 

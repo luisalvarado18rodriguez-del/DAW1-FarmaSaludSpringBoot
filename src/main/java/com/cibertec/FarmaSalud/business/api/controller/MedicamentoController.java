@@ -3,7 +3,7 @@ package com.cibertec.FarmaSalud.business.api.controller;
 import com.cibertec.FarmaSalud.business.api.dto.medicamento.MedicamentoRequestDto;
 import com.cibertec.FarmaSalud.business.api.dto.medicamento.MedicamentoResponseDto;
 import com.cibertec.FarmaSalud.business.domain.service.MedicamentoService;
-import com.cibertec.FarmaSalud.business.domain.service.UploadFileService;
+import com.cibertec.FarmaSalud.business.domain.service.impl.UploadFileService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
