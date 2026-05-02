@@ -1,17 +1,14 @@
 package com.cibertec.FarmaSalud.security.config;
 
-// IMPORTANTE: Importamos la INTERFAZ de Spring, no tu implementación
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -24,7 +21,6 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // Usamos la interfaz genérica aquí también para evitar conflictos
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -32,7 +28,6 @@ public class SecurityConfig {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -45,13 +40,27 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
+                        // 1. Opciones de navegador
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // 2. Acceso público a Usuarios (Login y Registro)
                         .requestMatchers("/api/usuarios/login", "/api/usuarios/registro").permitAll()
-                        // Permitimos todo lo relacionado a medicamentos y categorías
-                        .requestMatchers("/api/medicamentos/**", "/api/categorias/**").permitAll()
-                        // Permitimos las reservas y la ruta de error interna de Spring
-                        .requestMatchers("/api/reservas/**", "/api/reservas", "/error").permitAll()
+                        .requestMatchers("/api/usuarios/**").permitAll()
+
+                        // 3. Medicamentos: Restauramos permisos explícitos para asegurar el CRUD del Admin
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/medicamentos/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/medicamentos/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/medicamentos/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/medicamentos/**").permitAll()
+
+                        // 4. Categorías y Recursos estáticos
+                        .requestMatchers("/api/categorias/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
+
+                        // 5. Reservas y Manejo de Errores (Nuevas rutas necesarias)[cite: 1, 2]
+                        .requestMatchers("/api/reservas/**", "/api/reservas", "/error").permitAll()
+
+                        // 6. Resto de peticiones
                         .anyRequest().authenticated()
                 );
 
