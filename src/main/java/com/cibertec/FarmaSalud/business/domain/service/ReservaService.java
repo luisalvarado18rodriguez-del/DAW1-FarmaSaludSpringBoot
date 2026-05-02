@@ -11,4 +11,5 @@ public interface ReservaService {
     ReservaResponseDto crearReserva(ReservaRequestDto requestDto, List<MultipartFile> archivos);
     List<ReservaResponseDto> listarTodas();
     List<ReservaResponseDto> listarPorUsuario(Long idUsuario);
+    ReservaResponseDto actualizarEstado(Long idReserva, String nuevoEstado);
 }

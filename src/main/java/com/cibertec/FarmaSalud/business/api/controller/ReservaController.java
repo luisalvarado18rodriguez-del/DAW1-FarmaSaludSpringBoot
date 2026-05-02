@@ -34,6 +34,10 @@ public class ReservaController {
     public List<ReservaResponseDto> listarPorUsuario(@PathVariable Long idUsuario) {
         return service.listarPorUsuario(idUsuario);
     }
+    @PatchMapping("/{id}/estado")
+    public ReservaResponseDto cambiarEstado(@PathVariable Long id, @RequestParam String estado) {
+        return service.actualizarEstado(id, estado);
+    }
 
 
 }

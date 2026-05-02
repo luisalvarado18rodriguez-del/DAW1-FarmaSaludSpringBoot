@@ -107,4 +107,13 @@ public class ReservaServiceImpl implements ReservaService {
                 .map(mapper::toResponseDto)
                 .collect(Collectors.toList());
     }
+    @Override
+    @Transactional
+    public ReservaResponseDto actualizarEstado(Long idReserva, String nuevoEstado) {
+        Reserva reserva = reservaRepo.findById(idReserva)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+        reserva.setEstado(EstadoReserva.valueOf(nuevoEstado.toUpperCase()));
+        return mapper.toResponseDto(reservaRepo.save(reserva));
+    }
 }
