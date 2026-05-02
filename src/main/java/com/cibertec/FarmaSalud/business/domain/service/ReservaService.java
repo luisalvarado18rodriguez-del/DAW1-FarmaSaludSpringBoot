@@ -10,4 +10,5 @@ public interface ReservaService {
     // Cambia la firma del método
     ReservaResponseDto crearReserva(ReservaRequestDto requestDto, List<MultipartFile> archivos);
     List<ReservaResponseDto> listarTodas();
+    List<ReservaResponseDto> listarPorUsuario(Long idUsuario);
 }

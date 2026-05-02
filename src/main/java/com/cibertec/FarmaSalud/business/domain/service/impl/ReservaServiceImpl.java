@@ -100,4 +100,11 @@ public class ReservaServiceImpl implements ReservaService {
                 .map(mapper::toResponseDto)
                 .collect(Collectors.toList());
     }
+    @Override
+    public List<ReservaResponseDto> listarPorUsuario(Long idUsuario) {
+        // Usamos el repositorio para buscar por el ID del usuario
+        return reservaRepo.findByUsuarioIdUsuario(idUsuario).stream()
+                .map(mapper::toResponseDto)
+                .collect(Collectors.toList());
+    }
 }

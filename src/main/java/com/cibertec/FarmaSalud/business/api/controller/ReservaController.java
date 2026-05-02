@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/reservas")
-@CrossOrigin(origins = "http://localhost:4200")
 public class ReservaController {
 
     @Autowired
@@ -21,14 +20,19 @@ public class ReservaController {
     @PostMapping(consumes = {"multipart/form-data"})
     public ReservaResponseDto crear(
             @RequestPart("reserva") ReservaRequestDto dto,
-            @RequestPart("archivos") List<MultipartFile> archivos) {
-        // Aquí llamaremos al servicio pasando el DTO y los archivos reales
+            // Agregamos required = false para que no explote si la lista va vacía
+            @RequestPart(value = "archivos", required = false) List<MultipartFile> archivos) {
         return service.crearReserva(dto, archivos);
     }
 
     @GetMapping
     public List<ReservaResponseDto> listar() {
         return service.listarTodas();
+    }
+
+    @GetMapping("/usuario/{idUsuario}")
+    public List<ReservaResponseDto> listarPorUsuario(@PathVariable Long idUsuario) {
+        return service.listarPorUsuario(idUsuario);
     }
 
 

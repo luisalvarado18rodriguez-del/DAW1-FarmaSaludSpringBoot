@@ -47,16 +47,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/usuarios/login", "/api/usuarios/registro").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/medicamentos/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/medicamentos/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/medicamentos/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/medicamentos/**").permitAll()
-                        .requestMatchers("/api/usuarios/**").permitAll()
-                        .requestMatchers("/api/categorias/**").permitAll()
+                        // Permitimos todo lo relacionado a medicamentos y categorías
+                        .requestMatchers("/api/medicamentos/**", "/api/categorias/**").permitAll()
+                        // Permitimos las reservas y la ruta de error interna de Spring
+                        .requestMatchers("/api/reservas/**", "/api/reservas", "/error").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 );
-
 
         return http.build();
     }
