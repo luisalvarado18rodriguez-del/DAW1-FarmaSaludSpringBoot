@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: FarmaSalud
+  datasource:
+    url: jdbc:mysql://localhost:3306/farmasalud_db
+    username: root
+    password: mysql
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # SECCIÓN AGREGADA PARA SUBIDA DE ARCHIVOS
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+server:
+  port: 8080
