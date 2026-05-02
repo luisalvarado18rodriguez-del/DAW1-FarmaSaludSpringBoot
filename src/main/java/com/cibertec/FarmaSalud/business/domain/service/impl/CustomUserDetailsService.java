@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return User.builder()
                 .username(usuario.getUsername())
                 .password(usuario.getPassword()) // Aquí Spring recibe el hash $2a$10...
-                .roles(String.valueOf(usuario.getRol()))
+                .authorities("ROLE_" + usuario.getRol())
                 .build();
     }
 }

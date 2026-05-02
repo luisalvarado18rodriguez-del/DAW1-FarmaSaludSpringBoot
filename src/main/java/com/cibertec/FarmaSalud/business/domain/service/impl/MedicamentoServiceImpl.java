@@ -56,26 +56,26 @@ public class MedicamentoServiceImpl implements MedicamentoService {
 
     @Override
     public MedicamentoResponseDto actualizar(Long id, MedicamentoRequestDto requestDto) {
-        // 1. Buscamos el medicamento existente usando la instancia 'repo'
         return repo.findById(id).map(medicamento -> {
 
-            // 2. Actualizamos los campos básicos desde el DTO
             medicamento.setNombre(requestDto.getNombre());
             medicamento.setPrecio(requestDto.getPrecio());
             medicamento.setStock(requestDto.getStock());
             medicamento.setFechaVencimiento(requestDto.getFechaVencimiento());
             medicamento.setRecetaMedica(requestDto.getRecetaMedica());
 
-            // 3. Manejo de la Categoría
+
             if (requestDto.getIdCategoria() != null) {
                 categoriaRepo.findById(requestDto.getIdCategoria())
                         .ifPresent(medicamento::setCategoria);
             }
 
-            // 4. Guardamos los cambios en la BD usando la instancia 'repo'
-            Medicamento actualizado = repo.save(medicamento);
 
-            // 5. Retornamos la respuesta mapeada
+            if (requestDto.getRutaImagen() != null) {
+                medicamento.setRutaImagen(requestDto.getRutaImagen());
+            }
+
+            Medicamento actualizado = repo.save(medicamento);
             return mapper.toResponseDto(actualizado);
 
         }).orElseThrow(() -> new RuntimeException("No se encontró el medicamento con ID: " + id));

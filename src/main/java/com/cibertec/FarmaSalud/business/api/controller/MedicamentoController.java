@@ -50,8 +50,21 @@ public class MedicamentoController {
         service.eliminar(id);
     }
 
-    @PutMapping("/{id}")
-    public MedicamentoResponseDto actualizar(@PathVariable Long id, @Valid @RequestBody MedicamentoRequestDto dto) {
+    @PutMapping(value = "/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public MedicamentoResponseDto actualizar(
+            @PathVariable Long id,
+            @RequestPart("medicamento") String medicamentoJson,
+            @RequestPart(value = "archivo", required = false) MultipartFile archivo
+    ) throws IOException {
+
+        MedicamentoRequestDto dto = objectMapper.readValue(medicamentoJson, MedicamentoRequestDto.class);
+
+        // 👉 SI VIENE NUEVA IMAGEN
+        if (archivo != null && !archivo.isEmpty()) {
+            String nombreImagen = uploadService.saveFile(archivo);
+            dto.setRutaImagen(nombreImagen); // 🔥 CLAVE
+        }
+
         return service.actualizar(id, dto);
     }
 
